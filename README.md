@@ -4,7 +4,6 @@ Fast provisioning script
 Shell script to deploy some tools.
 
 @TODO
-StartDradis and Bashtemplates
-Dradis
-Dependencies.
-Moar tools.
+Silent mode of wget configure and stuff
+
+Moar tools
