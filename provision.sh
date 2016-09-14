@@ -5,12 +5,12 @@ GRAY='\033[0;37m'
 GREEN='\033[1;32m'
 RED='\033[1;31m'
 
-#pwd=$(pwd)
+homeDir=$(echo ~)
 pendingtasks="Pending Tasks:"
 
 # General
 echo "${YELLOW}General${GRAY}"
-tools="~/myTools"
+tools="${homeDir}/myTools"
 mkdir $tools
 
     # Utilities 
