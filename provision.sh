@@ -152,8 +152,10 @@ mkdir $web
     # Nikto
     echo "\t${YELLOW}Nikto Web Scanner${GRAY}"
     cd $web
-    git clone -q https://github.com/sullo/nikto
-    niktoWebBasic="$(pwd)/nikto/program/nikto.pl"
+    wget -q wget https://cirt.net/nikto/nikto-2.1.5.tar.gz
+    tar -xzf nikto-2.1.5.tar.gz
+    rm nikto-2.1.5.tar.gz
+    niktoWebBasic="$(pwd)/nikto-2.1.5/nikto.pl"
 
     # Web Basic
     echo "\t${YELLOW}webBasic.sh${GRAY}"
