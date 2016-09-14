@@ -10,7 +10,7 @@ pendingtasks="Pending Tasks:"
 
 # General
 echo "${YELLOW}General${GRAY}"
-tools="${pwd}/tools"
+tools="${pwd}/myTools"
 mkdir $tools
 
     # Utilities 
@@ -19,15 +19,26 @@ mkdir $tools
     mkdir $utils
 
         # Update Projects
-        echo "\t${YELLOW}update projects${GRAY}"
+        echo "\t\t${YELLOW}update projects${GRAY}"
         cd $utils 
         git clone https://github.com/illegalPointer/updateprojects
         cp "${utils}/updateprojects/updateprojectsrecursive.sh" "${tools}/updateprojectsrecursive.sh"
+
+        # Provisionsh
+        echo "\t\t${YELLOW}Provisioning script${GRAY}"
+        cd $utils
+        git clone https://github.com/illegalPointer/provisioningscript
+
+	# Bash Template
+	echo "\t\t${YELLOW}Bash template${GRAY}"
+        cd $utils
+        git clone https://github.com/illegalPointer/bashtemplate
 
 # Android
 echo "${YELLOW}Android${GRAY}"
 android="${tools}/android"
 mkdir $android
+
     # ApkTool
     echo "\t${YELLOW}apktool${GRAY}"
     apktool="$android/apktool"
@@ -49,10 +60,8 @@ mkdir $android
     echo "#!/bin/sh\njarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $certname \$1 $certalias\nzipalign -f -v 4 \$1 \$1.temp\nmv \$1.temp \$1" >> $scriptname
     keytool -genkey -v -keystore $certname -keypass $password -storepass $password -dname "CN=Test_User, OU=Test_OU, O=Test_Org, L=Test_Locality, ST=Test_State, C=ES" -alias $certalias -keyalg RSA -keysize 2048 -validity 20000
     echo "$password" >> "${certname}_password.txt"
-    pendingtasks="${pendingtasks}\n\t- Recommended: Change keystore password in ${signandalign}/${certname}"
+    pendingtasks="${pendingtasks}\n\t- Recommended: Change keystore password in ${signandalign}/${certname}\n\t\tkeytool -storepasswd -keystore testcert"
     cd $android
-
-cd $tools
 
 # Infra
 echo "${YELLOW}Infrastructure${GRAY}"
@@ -69,24 +78,24 @@ cd $infra
         echo "${YELLOW}\t\tFinger${GRAY}"
         finger="${unix}/finger"
         mkdir $finger
-        cd $finger
     
             # Finger user enum
             echo "${YELLOW}\t\t\tFinger-user-enum${GRAY}"
+            cd $finger
             wget http://pentestmonkey.net/tools/finger-user-enum/finger-user-enum-1.0.tar.gz
             tar -xzvf finger-user-enum-1.0.tar.gz
             rm finger-user-enum-1.0.tar.gz
-    
-        cd $unix
 
         #Unix-Privesc
         echo "${YELLOW}\t\tUnix Privesc Check${GRAY}"
+        cd $unix
         wget http://pentestmonkey.net/tools/unix-privesc-check/unix-privesc-check-1.4.tar.gz
         tar -xzvf unix-privesc-check-1.4.tar.gz
         rm unix-privesc-check-1.4.tar.gz
 
         # Bash
         echo "${YELLOW}\t\tBash Shell${GRAY}"
+        cd $unix
         bash="${unix}/bash"
         bashversion="bash-4.3.30"
         mkdir $bash
@@ -115,8 +124,6 @@ cd $infra
         
         cd $bash
         rm "${bashversion}.tar.gz" 
-        cd $unix
-    cd $infra
 
     # Udp Proto scanner
     cd $infra
@@ -130,25 +137,83 @@ echo "${YELLOW}Web${GRAY}"
 web="${tools}/web"
 mkdir $web
 
+    # Hoppy
+    echo "\t${YELLOW}Hoppy Web Scanner${GRAY}"
+    cd $web
+    wget https://labs.portcullis.co.uk/download/hoppy-1.8.1.tar.bz2
+    bzip2 -d hoppy-1.8.1.tar.bz2
+    tar -xvf hoppy-1.8.1.tar
+    rm hoppy-1.8.1.tar
+
+    # Nikto
+    echo "\t${YELLOW}Nikto Web Scanner${GRAY}"
+    cd $web
+    git clone https://github.com/sullo/nikto
+
+    # Web Basic
+    echo "\t${YELLOW}webBasic.sh${GRAY}"
+    cd $web
+    git clone https://github.com/illegalPointer/webBasic.sh
+    
     # Crypto
     echo "\t${YELLOW}Crypo${GRAY}"
     crypto="${web}/crypto"
     mkdir ${crypto}
-    cd ${crypto}
-    
-        # Test Poodle TSL
+   
+        # Test Poodle TSL        
         echo "\t\t${YELLOW}Test POODLE TLS${GRAY}"
+        cd ${crypto}
         git clone https://github.com/exploresecurity/test_poodle_tls
 
         # Test SSL
         echo "\t\t${YELLOW}Test SSL ${GRAY}"
+        cd ${crypto}
         git clone https://github.com/drwetter/testssl.sh
 
+        # SSL Cipher Suite Enum
+	echo "\t\t${YELLOW}SSL Cipher Suite Enum${GRAY}"
+        cd ${crypto}
+        wget https://labs.portcullis.co.uk/download/ssl-cipher-suite-enum-v1.0.2.tar.gz
+        tar -xzvf ssl-cipher-suite-enum-v1.0.2.tar.gz
+        rm ssl-cipher-suite-enum-v1.0.2.tar.gz
+
+    # Fuzzing
+    echo "\t${YELLOW}Fuzzing${GRAY}"
+    fuzzing="${web}/fuzzing"
+    mkdir $fuzzing
+
+        # Dirb
+        echo "\t\t${YELLOW}Dirb${GRAY}"
+        cd $fuzzing
+        wget https://sourceforge.net/projects/dirb/files/dirb/2.22/
+        tar -xzvf download
+        pendingtasks="${pendingtasks}\n\t- Compile Dirb, located in ${fuzzing}"
+
+        # Wfuzz
+        echo "\t\t${YELLOW}wFuzz${GRAY}"
+        cd $fuzzing
+        git clone https://github.com/xmendez/wfuzz
+
+        # wFuzz Parser
+        echo "\t\t${YELLOW}wFuzz Parser${GRAY}"
+        cd $fuzzing
+        git clone https://github.com/illegalPointer/wFuzzParser
     
-# FuzzDB
-echo "${YELLOW}FuzzDB${GRAY}"
-cd $tools
-git clone https://github.com/fuzzdb-project/fuzzdb
+# Fuzzing
+echo "${YELLOW}FuzzLists${GRAY}"
+flists="${tools}/fuzzingLists"
+mkdir $flists
+    
+    # FuzzDB
+    echo "\t${YELLOW}FuzzDB${GRAY}"
+    cd $flists
+    git clone https://github.com/fuzzdb-project/fuzzdb
+
+    # SecLists
+    echo "\t${YELLOW}Sec Lists${GRAY}"
+    cd $flists
+    git clone https://github.com/danielmiessler/SecLists
+
 
 pendingtasks="${pendingtasks}\n\t- Add private repos, if needed"
 echo "${GREEN}Finished!${GRAY}"
