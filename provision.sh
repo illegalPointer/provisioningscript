@@ -19,7 +19,7 @@ mkdir $tools
     mkdir $utils
 
         # Update Projects
-        echo "\t\t${YELLOW}update projects${GRAY}"
+        echo "\t\t${YELLOW}Update projects${GRAY}"
         cd $utils 
         git clone -q https://github.com/illegalPointer/updateprojects
         cp "${utils}/updateprojects/updateprojectsrecursive.sh" "${tools}/updateprojectsrecursive.sh"
@@ -100,27 +100,30 @@ cd $infra
         bashversion="bash-4.3.30"
         mkdir $bash
         cd $bash
+        echo "${YELLOW}\t\t\tDownloading ${bashversion}${GRAY}"
         wget -q https://ftp.gnu.org/gnu/bash/${bashversion}.tar.gz
     
             # Bash 32
+            echo "${YELLOW}\t\t\tCompiling ${bashversion} 32 bits${GRAY}"
             bash32="${bash}/bash32"
             mkdir $bash32
             cd $bash
             tar -xzf "${bashversion}.tar.gz" -C ${bash32} --strip-components 1 --no-same-owner
             cd $bash32
             # Bash 32: configure32
-            ./configure --build=i686-pc-linux-gnu --enable-silent-rules "CC=gcc -m32" "CXX=g++ -m32" "LDFLAGS=-m32"
-            make
+            ./configure --build=i686-pc-linux-gnu --quiet "CC=gcc -m32" "CXX=g++ -m32" "LDFLAGS=-m32"
+            make --debug=n --silent
     
             # Bash 64
+            echo "${YELLOW}\t\t\tCompiling ${bashversion} 64 bits${GRAY}"
             bash64="${bash}/bash64"
             mkdir $bash64
             cd $bash
             tar -xzf "${bashversion}.tar.gz" -C ${bash64} --strip-components 1 --no-same-owner
             cd $bash64
             # Bash 64: configure64
-            ./configure --build=x86_64-pc-linux-gnu --enable-silent-rules "CC=gcc -m64" "CXX=g++ -m64" "LDFLAGS=-m64"
-            make
+            ./configure --build=x86_64-pc-linux-gnu --quiet "CC=gcc -m64" "CXX=g++ -m64" "LDFLAGS=-m64"
+            make --debug=n --silent
         
         cd $bash
         rm "${bashversion}.tar.gz" 
@@ -144,19 +147,22 @@ mkdir $web
     bzip2 -d -q hoppy-1.8.1.tar.bz2
     tar -xf hoppy-1.8.1.tar --no-same-owner
     rm hoppy-1.8.1.tar
+    hoppyWebBasic="$(pwd)/hoppy-1.8.1/hoppy"
 
     # Nikto
     echo "\t${YELLOW}Nikto Web Scanner${GRAY}"
     cd $web
     git clone -q https://github.com/sullo/nikto
+    niktoWebBasic="$(pwd)/nikto/program/nikto.pl"
 
     # Web Basic
     echo "\t${YELLOW}webBasic.sh${GRAY}"
     cd $web
     git clone -q https://github.com/illegalPointer/webBasic.sh
+    webBasicLocation="$(pwd)/webBasic.sh/webBasic.sh"
     
     # Crypto
-    echo "\t${YELLOW}Crypo${GRAY}"
+    echo "\t${YELLOW}Crypto${GRAY}"
     crypto="${web}/crypto"
     mkdir ${crypto}
    
@@ -186,8 +192,13 @@ mkdir $web
         echo "\t\t${YELLOW}Dirb${GRAY}"
         cd $fuzzing
         wget -q https://sourceforge.net/projects/dirb/files/dirb/2.22/dirb222.tar.gz/download        
-        tar -xzf download --nosameowner
-        pendingtasks="${pendingtasks}\n\t- Compile Dirb, located in ${fuzzing}"
+        tar -xzf download --no-same-owner
+        rm download
+        chmod -R 755 dirb222/
+        cd dirb222/
+        dirbWebBasic="$(pwd)/dirb"
+        ./configure --quiet
+        make --quiet
 
         # Wfuzz
         echo "\t\t${YELLOW}wFuzz${GRAY}"
@@ -213,8 +224,9 @@ mkdir $flists
     echo "\t${YELLOW}Sec Lists${GRAY}"
     cd $flists
     git clone -q https://github.com/danielmiessler/SecLists
+    dirListWebBasic="$(pwd)/SecLists/Discovery/Web_Content/common.txt"
 
-
+pendingtasks="${pendingtasks}\n\t- Consider Setting webBasic.sh located at ${webBasicLocation} with the following Vars\n\t\tHOPPY=\"${hoppyWebBasic}\"\n\t\tNIKTO=\"${niktoWebBasic}\"\n\t\tDIRB=\"${dirbWebBasic}\"\n\t\tDIRLIST=\"${dirListWebBasic}\""
 pendingtasks="${pendingtasks}\n\t- Add private repos, if needed"
 echo "${GREEN}Finished!${GRAY}"
 echo "${YELLOW}${pendingtasks}${GRAY}"
