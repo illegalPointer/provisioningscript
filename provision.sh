@@ -211,6 +211,17 @@ mkdir $web
         echo "\t\t${YELLOW}wFuzz Parser${GRAY}"
         cd $fuzzing
         git clone -q https://github.com/illegalPointer/wFuzzParser
+
+
+   # XXE
+   echo "\t${YELLOW}XXE${GRAY}"
+   xxe="${web}/xxe"
+   mkdir $xxe
+
+       # OXL
+       echo "\t\t${YELLOW}oxml_xxe${GRAY}"
+       cd $xxe
+       git clone -q https://github.com/BuffaloWill/oxml_xxe
     
 # Fuzzing
 echo "${YELLOW}FuzzLists${GRAY}"
