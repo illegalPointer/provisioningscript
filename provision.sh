@@ -10,7 +10,7 @@ pendingtasks="Pending Tasks:"
 
 # General
 echo "${YELLOW}General${GRAY}"
-tools="${homeDir}/myTools"
+tools="${homeDir}/myTools2"
 mkdir $tools
 
     # Utilities 
@@ -62,6 +62,19 @@ mkdir $android
     echo "$password" >> "${certname}_password.txt"
     pendingtasks="${pendingtasks}\n\t- Recommended: Change keystore password in ${signandalign}/${certname}\n\t\tkeytool -storepasswd -keystore testcert"
     cd $android
+
+    #MobSF
+    echo "\t${YELLOW}MobSF${GRAY}"
+    cd ${android}
+    git clone -q https://github.com/ajinabraham/Mobile-Security-Framework-MobSF
+    cd "${android}/Mobile-Security-Framework-MobSF"
+    echo "\t\t${YELLOW}Installing Mob-SF requisites${GRAY}"
+    pip install -r requirements.txt --user
+
+    # Jadx
+    echo "\t${YELLOW}Jadx${GRAY}"
+    cd ${android}
+    git clone -q https://github.com/skylot/jadx
 
 # Infra
 echo "${YELLOW}Infrastructure${GRAY}"
@@ -135,6 +148,11 @@ cd $infra
     tar -xzf udp-proto-scanner-1.1.tar.gz --no-same-owner
     rm udp-proto-scanner-1.1.tar.gz
 
+    # Nmap Launcher
+    cd ${infra}
+    echo "${YELLOW}\tNmapLauncher${GRAY}"
+    git clone -q https://github.com/illegalPointer/nmapLauncher
+
 # Web
 echo "${YELLOW}Web${GRAY}"
 web="${tools}/web"
@@ -177,6 +195,7 @@ mkdir $web
         echo "\t\t${YELLOW}Test SSL ${GRAY}"
         cd ${crypto}
         git clone -q https://github.com/drwetter/testssl.sh
+        testSSLBasic="${crypto}/testssl.sh/testssl.sh"
 
         # SSL Cipher Suite Enum
 	echo "\t\t${YELLOW}SSL Cipher Suite Enum${GRAY}"
@@ -184,6 +203,13 @@ mkdir $web
         wget -q https://labs.portcullis.co.uk/download/ssl-cipher-suite-enum-v1.0.2.tar.gz
         tar -xzf ssl-cipher-suite-enum-v1.0.2.tar.gz --no-same-owner
         rm ssl-cipher-suite-enum-v1.0.2.tar.gz
+        cipherEnumSSLBasic="${crypto}/ssl-cipher-suite-enum-v1.0.2/ssl-cipher-suite-enum.pl"
+
+        # SSLBasic.ch
+        echo "\t\t${YELLOW}sslBasic.sh${GRAY}"
+        cd ${crypto}
+        git clone -q https://github.com/illegalPointer/sslBasic.sh
+        sslBasicLocation="${crypto}/sslBasic.sh"
 
     # Fuzzing
     echo "\t${YELLOW}Fuzzing${GRAY}"
@@ -240,6 +266,7 @@ mkdir $flists
     dirListWebBasic="$(pwd)/SecLists/Discovery/Web_Content/common.txt"
 
 pendingtasks="${pendingtasks}\n\t- Consider Setting webBasic.sh located at ${webBasicLocation} with the following Vars\n\t\tHOPPY=\"${hoppyWebBasic}\"\n\t\tNIKTO=\"${niktoWebBasic}\"\n\t\tDIRB=\"${dirbWebBasic}\"\n\t\tDIRLIST=\"${dirListWebBasic}\""
+pendingtasks="${pendingtasks}\n\t- Consider Setting sslBasic.sh located at ${sslBasicLocation} with the following Vars\n\t\tTESTSSL=\"${testSSLBasic}\"\n\t\tSSLENUM=\"${cipherEnumSSLBasic}\""
 pendingtasks="${pendingtasks}\n\t- Add private repos, if needed"
 echo "${GREEN}Finished!${GRAY}"
 echo "${YELLOW}${pendingtasks}${GRAY}"
