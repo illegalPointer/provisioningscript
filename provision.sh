@@ -22,6 +22,7 @@ mkdir $tools
         echo "\t\t${YELLOW}Update projects${GRAY}"
         cd $utils 
         git clone -q https://github.com/illegalPointer/updateprojects
+        echo "\t\t\t${GREEN}Copying the script to ${tools}${GRAY}"
         cp "${utils}/updateprojects/updateprojectsrecursive.sh" "${tools}/updateprojectsrecursive.sh"
 
         # Provisionsh
@@ -34,48 +35,74 @@ mkdir $tools
         cd $utils
         git clone -q https://github.com/illegalPointer/bashtemplate
 
-# Android
-echo "${YELLOW}Android${GRAY}"
-android="${tools}/android"
-mkdir $android
+# Mobile
+echo "${YELLOW}Mobile${GRAY}"
+mobile="${tools}/mobile"
+mkdir $mobile
 
-    # ApkTool
-    echo "\t${YELLOW}apktool${GRAY}"
-    apktool="$android/apktool"
-    mkdir $apktool
-    cd $apktool
-    echo "http://ibotpeaches.github.io/Apktool/install/" >> HOW_TO_INSTALL
-    pendingtasks="$pendingtasks\n\t- Install apktool ($apktool)"
-    cd $android
+    # iOS
+    echo "\t${YELLOW}iOS${GRAY}"
+    ios="${mobile}/iOS"
+    mkdir $ios
 
-    # Signandalign
-    echo "\t${YELLOW}signandalign${GRAY}"
-    signandalign="$android/signandalign"
-    mkdir $signandalign
-    cd $signandalign
-    password="change_me"
-    certname="testcert"
-    certalias="testalias"
-    scriptname="signandalign.sh"
-    echo "#!/bin/sh\njarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $certname \$1 $certalias\nzipalign -f -v 4 \$1 \$1.temp\nmv \$1.temp \$1" >> $scriptname
-    keytool -genkey -v -keystore $certname -keypass $password -storepass $password -dname "CN=Test_User, OU=Test_OU, O=Test_Org, L=Test_Locality, ST=Test_State, C=ES" -alias $certalias -keyalg RSA -keysize 2048 -validity 20000
-    echo "$password" >> "${certname}_password.txt"
-    pendingtasks="${pendingtasks}\n\t- Recommended: Change keystore password in ${signandalign}/${certname}\n\t\tkeytool -storepasswd -keystore testcert"
-    cd $android
+        # plutil.pl
+        echo "\t\t${YELLOW}plutil.pl${gray}"
+        cd $ios
+        mkdir "${ios}/plutil"
+        cd "${ios}/plutil"
+        wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' --no-check-certificate http://scw.us/iPhone/plutil/plutil.pl
 
-    #MobSF
-    echo "\t${YELLOW}MobSF${GRAY}"
-    cd ${android}
-    git clone -q https://github.com/ajinabraham/Mobile-Security-Framework-MobSF
-    cd "${android}/Mobile-Security-Framework-MobSF"
-    echo "\t\t${YELLOW}Installing Mob-SF requisites${GRAY}"
-    pip install -r requirements.txt --user
+        # FileDP
+        echo "\t\t${YELLOW}FileDP${GRAY}"
+        cd $ios
+        mkdir "${ios}/fileDP"
+        cd "${ios}/fileDP"
+        wget -q -U 'Mozilla/5.0 (X11; Linux x86_64; rv:30.0) Gecko/20100101 Firefox/30.0' --no-check-certificate http://www.securitylearn.net/wp-content/uploads/tools/iOS/FileDP.zip
+        unzip FileDP.zip 1>/dev/null
+        rm FileDP.zip
 
-    # Jadx
-    echo "\t${YELLOW}Jadx${GRAY}"
-    cd ${android}
-    git clone -q https://github.com/skylot/jadx
+    # Android
+    echo "\t${YELLOW}Android${GRAY}"
+    android="${mobile}/android"
+    mkdir $android
 
+        # ApkTool
+        echo "\t\t${YELLOW}apktool${GRAY}"
+        apktool="$android/apktool"
+        mkdir $apktool
+        cd $apktool
+        echo "http://ibotpeaches.github.io/Apktool/install/" >> HOW_TO_INSTALL
+        pendingtasks="$pendingtasks\n\t- Install apktool ($apktool)"
+        cd $android
+
+        # Signandalign
+        echo "\t\t${YELLOW}signandalign${GRAY}"
+        signandalign="$android/signandalign"
+        mkdir $signandalign
+        cd $signandalign
+        password="change_me"
+        certname="testcert"
+        certalias="testalias"
+        scriptname="signandalign.sh"
+        echo "#!/bin/sh\njarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $certname \$1 $certalias\nzipalign -f -v 4 \$1 \$1.temp\nmv \$1.temp \$1" >> $scriptname
+        keytool -genkey -v -keystore $certname -keypass $password -storepass $password -dname "CN=Test_User, OU=Test_OU, O=Test_Org, L=Test_Locality, ST=Test_State, C=ES" -alias $certalias -keyalg RSA -keysize 2048 -validity 20000 1>/dev/null
+        echo "$password" >> "${certname}_password.txt"
+        pendingtasks="${pendingtasks}\n\t- Recommended: Change keystore password in ${signandalign}/${certname}\n\t\tkeytool -storepasswd -keystore testcert"
+        cd $android
+
+        #MobSF
+        echo "\t\t${YELLOW}MobSF${GRAY}"
+        cd ${android}
+        git clone -q https://github.com/ajinabraham/Mobile-Security-Framework-MobSF
+        cd "${android}/Mobile-Security-Framework-MobSF"
+        echo "\t\t\t${GREEN}Installing Mob-SF requisites${GRAY}"
+        pip install -r requirements.txt --user 1>/dev/null
+    
+        # Jadx
+        echo "\t\t${YELLOW}Jadx${GRAY}"
+        cd ${android}
+        git clone -q https://github.com/skylot/jadx
+    
 # Infra
 echo "${YELLOW}Infrastructure${GRAY}"
 infra="${tools}/infra"
@@ -113,30 +140,30 @@ cd $infra
         bashversion="bash-4.3.30"
         mkdir $bash
         cd $bash
-        echo "${YELLOW}\t\t\tDownloading ${bashversion}${GRAY}"
+        echo "${GREEN}\t\t\tDownloading ${bashversion}${GRAY}"
         wget -q https://ftp.gnu.org/gnu/bash/${bashversion}.tar.gz
     
             # Bash 32
-            echo "${YELLOW}\t\t\tCompiling ${bashversion} 32 bits${GRAY}"
+            echo "${GREEN}\t\t\tCompiling ${bashversion} 32 bits${GRAY}"
             bash32="${bash}/bash32"
             mkdir $bash32
             cd $bash
             tar -xzf "${bashversion}.tar.gz" -C ${bash32} --strip-components 1 --no-same-owner
             cd $bash32
             # Bash 32: configure32
-            ./configure --build=i686-pc-linux-gnu --quiet "CC=gcc -m32" "CXX=g++ -m32" "LDFLAGS=-m32"
-            make --debug=n --silent
+            ./configure --build=i686-pc-linux-gnu --quiet "CC=gcc -m32" "CXX=g++ -m32" "LDFLAGS=-m32" 1>/dev/null
+            make --debug=n --silent 1>/dev/null
     
             # Bash 64
-            echo "${YELLOW}\t\t\tCompiling ${bashversion} 64 bits${GRAY}"
+            echo "${GREEN}\t\t\tCompiling ${bashversion} 64 bits${GRAY}"
             bash64="${bash}/bash64"
             mkdir $bash64
             cd $bash
             tar -xzf "${bashversion}.tar.gz" -C ${bash64} --strip-components 1 --no-same-owner
             cd $bash64
             # Bash 64: configure64
-            ./configure --build=x86_64-pc-linux-gnu --quiet "CC=gcc -m64" "CXX=g++ -m64" "LDFLAGS=-m64"
-            make --debug=n --silent
+            ./configure --build=x86_64-pc-linux-gnu --quiet "CC=gcc -m64" "CXX=g++ -m64" "LDFLAGS=-m64" 1>/dev/null
+            make --debug=n --silent 1>/dev/null
         
         cd $bash
         rm "${bashversion}.tar.gz" 
@@ -161,7 +188,7 @@ mkdir $web
     # Hoppy
     echo "\t${YELLOW}Hoppy Web Scanner${GRAY}"
     cd $web
-    wget -q https://labs.portcullis.co.uk/download/hoppy-1.8.1.tar.bz2
+    wget -q --no-check-certificate https://labs.portcullis.co.uk/download/hoppy-1.8.1.tar.bz2
     bzip2 -d -q hoppy-1.8.1.tar.bz2
     tar -xf hoppy-1.8.1.tar --no-same-owner
     rm hoppy-1.8.1.tar
@@ -200,7 +227,7 @@ mkdir $web
         # SSL Cipher Suite Enum
 	echo "\t\t${YELLOW}SSL Cipher Suite Enum${GRAY}"
         cd ${crypto}
-        wget -q https://labs.portcullis.co.uk/download/ssl-cipher-suite-enum-v1.0.2.tar.gz
+        wget --no-check-certificate -q https://labs.portcullis.co.uk/download/ssl-cipher-suite-enum-v1.0.2.tar.gz
         tar -xzf ssl-cipher-suite-enum-v1.0.2.tar.gz --no-same-owner
         rm ssl-cipher-suite-enum-v1.0.2.tar.gz
         cipherEnumSSLBasic="${crypto}/ssl-cipher-suite-enum-v1.0.2/ssl-cipher-suite-enum.pl"
@@ -219,14 +246,15 @@ mkdir $web
         # Dirb
         echo "\t\t${YELLOW}Dirb${GRAY}"
         cd $fuzzing
-        wget -q https://sourceforge.net/projects/dirb/files/dirb/2.22/dirb222.tar.gz/download        
+        wget -q --no-check-certificate https://sourceforge.net/projects/dirb/files/dirb/2.22/dirb222.tar.gz/download        
         tar -xzf download --no-same-owner
         rm download
         chmod -R 755 dirb222/
         cd dirb222/
+        echo "\t\t\t${GREEN}Building dirb${GRAY}"
         dirbWebBasic="$(pwd)/dirb"
-        ./configure --quiet
-        make --quiet
+        ./configure --quiet 1>/dev/null
+        make --quiet 1>/dev/null
 
         # Wfuzz
         echo "\t\t${YELLOW}wFuzz${GRAY}"
@@ -265,8 +293,22 @@ mkdir $flists
     git clone -q https://github.com/danielmiessler/SecLists
     dirListWebBasic="$(pwd)/SecLists/Discovery/Web_Content/common.txt"
 
+# Reversing
+echo "${YELLOW}Reversing${GRAY}"
+reversing="${tools}/reversing"
+mkdir $reversing
+
+    # Radare2
+    echo "${YELLOW}\tRadare2${Gray}"
+    cd $reversing
+    git clone -q https://github.com/radare/radare2
+    cd radare2
+    echo "${GREEN}\t\tInstalling radare${GRAY}"
+    sys/install.sh 1>/dev/null
+
 pendingtasks="${pendingtasks}\n\t- Consider Setting webBasic.sh located at ${webBasicLocation} with the following Vars\n\t\tHOPPY=\"${hoppyWebBasic}\"\n\t\tNIKTO=\"${niktoWebBasic}\"\n\t\tDIRB=\"${dirbWebBasic}\"\n\t\tDIRLIST=\"${dirListWebBasic}\""
 pendingtasks="${pendingtasks}\n\t- Consider Setting sslBasic.sh located at ${sslBasicLocation} with the following Vars\n\t\tTESTSSL=\"${testSSLBasic}\"\n\t\tSSLENUM=\"${cipherEnumSSLBasic}\""
 pendingtasks="${pendingtasks}\n\t- Add private repos, if needed"
+pendingtasks="${pendingtasks}\n\t- Execute sudo apt-get install sqlitebrowser"
 echo "${GREEN}Finished!${GRAY}"
 echo "${YELLOW}${pendingtasks}${GRAY}"
