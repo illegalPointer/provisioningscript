@@ -5,3 +5,5 @@ Shell script to deploy some tools.
 
 @TODO
 Moar tools
+
+CMSmap, WPScan
